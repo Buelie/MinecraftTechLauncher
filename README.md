@@ -1,2 +1,12 @@
-# MinecraftTechLauncher
-MinecraftTechLauncher
+# MinecraftTechLauncher简介
+
+**MinecraftTechLauncher是一个以Py+tk/ttk制作而成的《我的世界》启动器，它以实用性为主，所以它的页面有时候可能会使您感到不适，尤其是预览版**
+
+# 常见问题
+
+**A:为什么启动器没有图标文件或者配置文件时无法启动？** <br>
+**B:因为启动器基于图标文件或者配置文件?(滑稽)**
+
+# 开发者频道
+
+**待更新**
