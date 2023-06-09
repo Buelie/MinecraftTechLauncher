@@ -2,16 +2,25 @@
 
 **MinecraftTechLauncher是一个以Py+tk/ttk制作而成的《我的世界》启动器，它以实用性为主，所以它的页面有时候可能会使您感到不适，尤其是预览版**
 
+![image](https://github.com/Buelie/MinecraftTechLauncher/assets/111875719/3ce90c0f-697f-42b9-a039-932bc4011f7f)
+
+
 # 常见问题
 
 **A:为什么启动器没有图标文件或者配置文件时无法启动？** <br>
 **B:因为启动器基于图标文件或者配置文件?(滑稽)** <br>
 
+![image](https://github.com/Buelie/MinecraftTechLauncher/assets/111875719/65079731-806d-4909-b255-46db38c43218)
+
 **A:为什么启动器无法启动？** <br>
 **B:请确保图标文件或者配置文件还健在，它们是启动器的心脏和脑子** <br>
 
+![image](https://github.com/Buelie/MinecraftTechLauncher/assets/111875719/994867d7-4d78-4693-870e-7d56fb540987)
+
 **A:为什么启动器不使用PyQt开发GUI？** <br>
 **B:因为作者不会用...(作者甚至有一段时间在想着用CUI作为启动器的界面...)** <br>
+
+![image](https://github.com/Buelie/MinecraftTechLauncher/assets/111875719/847f5127-78d0-4a37-979f-259fe52512a7)
 
 # 开发者频道
 
