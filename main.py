@@ -88,15 +88,15 @@ VerVar.set(os.listdir('.minecraft/versions')) #存放版本列表注册到列表
 VerMenu = tk.Listbox(MainForm,name='版本列表',listvariable=VerVar) #存放版本列表注册到列表
 
 VerLen_L = ttk.Label(MainForm,text="游戏版本数量:").grid(row=0,column=1)
-VerLen = ttk.Label(MainForm,text=str(len(ReadFile("config/c.json")['ver']['Minecraft']))).grid(row=0,column=2)
+VerLen = ttk.Label(MainForm,text=str(len(os.listdir('.minecraft/versions')))).grid(row=0,column=2)
 
-JavaPthLable = ttk.Label(MainForm,text='Java路径:').grid(row=2,column=0)
+JavaPthLable = ttk.Label(MainForm,text='Java路径:').grid(row=3,column=0)
 JavaPth = ttk.Entry(MainForm)
 
-BigNC = ttk.Label(MainForm,text='最大内存:').grid(row=1,column=1)
+BigNC = ttk.Label(MainForm,text='最大内存:').grid(row=2,column=0)
 BiggestNC = ttk.Entry(MainForm)
 
-VL = ttk.Label(MainForm,text="版本名称(必须和json文件名一致)")
+VL = ttk.Label(MainForm,text="版本名称(必须和json文件名一致):")
 VER = ttk.Entry(MainForm)
 
 def startgame():
@@ -110,7 +110,7 @@ def startgame():
         else:
             messagebox.showinfo("提示","启动成功")
             try:
-                Satart = "-XX:+UseG1GC "+"-XX:-UseAdaptiveSizePolicy "+\
+                Satart = JavaPth.get()+" "+"-XX:+UseG1GC "+"-XX:-UseAdaptiveSizePolicy "+\
                 "-XX:-OmitStackTraceInFastThrow "+"-Dfml.ignoreInvalidMinecraftCertificates=True "+\
                 "-Dfml.ignorePatchDiscrepancies=True "+"-Dlog4j2.formatMsgNoLookups=true "+\
                 "-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump "+\
@@ -131,11 +131,11 @@ def startgame():
                 print(e)
                 return e
 
-VL.grid(row=3,column=0)
-VER.grid(row=3,column=1)
-BiggestNC.grid(row=1,column=2)
+VL.grid(row=4,column=0)
+VER.grid(row=4,column=1)
+BiggestNC.grid(row=2,column=1)
 VerMenu.grid(row=0,column=0)
-JavaPth.grid(row=2,column=1)
+JavaPth.grid(row=3,column=1)
 StartGameBtn = ttk.Button(MainForm,text='启动游戏',command=startgame).grid(row=1,column=0) #启动游戏按钮
 ################# 启动器菜单栏 #################
 MainMenu = tk.Menu(MainForm,relief='solid')
@@ -157,6 +157,12 @@ StarterMenu_2.add_command(label="游戏本体",command=DownTovM)
 StarterMenu_2.add_separator()
 StarterMenu_2.add_command(label="高级设置")
 MainMenu.add_cascade(label="下载",menu=StarterMenu_2)
+
+StarterMenu_3 = tk.Menu(MainMenu,tearoff=False)
+StarterMenu_3.add_command(label="开发者工具")
+StarterMenu_3.add_separator()
+StarterMenu_3.add_command(label="开发者设置")
+MainMenu.add_cascade(label="开发者选项",menu=StarterMenu_3)
 ###############################################
 
 MainForm.config(menu=MainMenu) #配置
