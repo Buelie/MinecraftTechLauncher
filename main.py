@@ -13,7 +13,7 @@ from tkinter import messagebox
 
 MainForm = tk.Tk()
 
-print(os.listdir('.minecraft/versions'))
+print(os.listdir('plugin/'))
 
 def SettingMain():
     
@@ -73,6 +73,30 @@ def ReadFile(path): #读取文件函数
         data = json.load(file)
         file.close()
     return data
+
+command = []
+command.append(ReadFile('plugin/HtexdPiny.json')["command"])
+plugin_id = []
+plugin_id.append(ReadFile('plugin/HtexdPiny.json')["id"])
+PluginName = []
+PluginName.append("HtexdPiny")
+
+def PluginWind():
+
+    Main = tk.Toplevel()
+    Main.geometry("600x450+374+182")
+    Main.title('MinecraftTechLauncher') #设置标题
+    Main.iconphoto(False,tk.PhotoImage(file='icon.png')) #设置窗口图标
+
+    PluginLable = ttk.Label(Main,text="插件列表").pack()
+    PluginList = ttk.Label(Main)
+    PluginList.config(text=os.listdir('plugin/'))    
+    PluginList.pack()
+    PluginJH = ttk.Label(Main,text="激活插件")
+    PluginEn = ttk.Entry(Main)
+    PluginJH.pack()
+    PluginEn.pack()
+    print(command)
 
 WriteJson = {"ver":{"minecraft":[]}} #文件写入预定义模板 [001]
 
@@ -134,6 +158,36 @@ def startgame():
                 messagebox.showerror("拼接信息 - ERROR","拼接失败!!!\n"+str(e))
                 print(e)
                 return e
+PluginCommandLable = ttk.Label(MainForm,text="执行命令:").grid(row=5,column=0)
+PluginCommand = ttk.Entry(MainForm,width=30)
+
+def Command():
+    if PluginCommand.get() != "":
+        try:
+            if PluginCommand.get() == "/cfg start":
+                Satart = "java"+" "+"-XX:+UseG1GC "+"-XX:-UseAdaptiveSizePolicy "+\
+                "-XX:-OmitStackTraceInFastThrow "+"-Dfml.ignoreInvalidMinecraftCertificates=True "+\
+                "-Dfml.ignorePatchDiscrepancies=True "+"-Dlog4j2.formatMsgNoLookups=true "+\
+                "-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump "+\
+                "-Dminecraft.launcher.brand=MinecraftTechLauncher "+\
+                "-Dminecraft.launcher.version=0.0.3 "
+                if platform.version()[0:2] == '10':
+                    WinTen = '-Dos.name=Windows 10 " -Dos.version=10.0 '+\
+                    "-Xmn256m "+"-Xmx"+BiggestNC.get()+"m "+\
+                    ReadFile('.minecraft/versions/'+VER.get()+'/'+VER.get()+'.json')['mainClass']+" "
+                    SatartCS = Satart + WinTen
+                else:
+                    SatartCS = Satart + "-Xmn256m "+"-Xmx"+BiggestNC.get()+"m "+\
+                    " "+ReadFile('.minecraft/versions/'+VER.get()+'/'+VER.get()+'.json')['mainClass']+" "
+                print(SatartCS)
+                messagebox.showinfo("拼接信息:",SatartCS)
+            else:
+                pass
+        except Exception as e:
+            messagebox.showerror("ERROE",e)
+
+PluginBtn = ttk.Button(MainForm,text="执行",command=Command).grid(row=5,column=3)
+PluginCommand.grid(row=5,column=1)
 
 VL.grid(row=4,column=0)
 VER.grid(row=4,column=1)
@@ -159,7 +213,7 @@ StarterMenu_2.add_separator()
 StarterMenu_2.add_command(label="整合包")
 StarterMenu_2.add_command(label="游戏本体",command=DownTovM)
 StarterMenu_2.add_separator()
-StarterMenu_2.add_command(label="高级设置")
+StarterMenu_2.add_command(label="高级设置",command=PluginWind)
 MainMenu.add_cascade(label="下载",menu=StarterMenu_2)
 
 StarterMenu_3 = tk.Menu(MainMenu,tearoff=False)
