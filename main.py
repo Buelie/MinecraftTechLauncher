@@ -80,8 +80,6 @@ def WriteFile(path,data:str = ""): #文件写入函数
     with open(path,'w+') as file:
         json.dump(data)
 
-Json_Ver = ReadFile('config/c.json')
-
 VerVar = tk.StringVar() #存放版本列表
 VerVar.set(os.listdir('.minecraft/versions')) #存放版本列表注册到列表
 
@@ -110,7 +108,7 @@ def startgame():
         else:
             messagebox.showinfo("提示","启动成功")
             try:
-                Satart = JavaPth.get()+" "+"-XX:+UseG1GC "+"-XX:-UseAdaptiveSizePolicy "+\
+                Satart = "java"+" "+"-XX:+UseG1GC "+"-XX:-UseAdaptiveSizePolicy "+\
                 "-XX:-OmitStackTraceInFastThrow "+"-Dfml.ignoreInvalidMinecraftCertificates=True "+\
                 "-Dfml.ignorePatchDiscrepancies=True "+"-Dlog4j2.formatMsgNoLookups=true "+\
                 "-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump "+\
@@ -126,8 +124,14 @@ def startgame():
                     " "+ReadFile('.minecraft/versions/'+VER.get()+'/'+VER.get()+'.json')['mainClass']+" "
                 print(SatartCS)
                 messagebox.showinfo("拼接信息:",SatartCS)
+                try:
+                    os.system(SatartCS)
+                except Exception as er:
+                    messagebox.showerror("启动失败",er)
+                    print(er)
+                    return er
             except Exception as e:
-                messagebox.showerror("拼接信息 - ERROR","拼接失败!!!\n"+e)
+                messagebox.showerror("拼接信息 - ERROR","拼接失败!!!\n"+str(e))
                 print(e)
                 return e
 
