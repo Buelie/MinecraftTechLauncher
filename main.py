@@ -1,3 +1,4 @@
+import platform
 from tkinter import MULTIPLE, ttk
 import tkinter as tk
 import json
@@ -11,6 +12,8 @@ import subprocess
 from tkinter import messagebox
 
 MainForm = tk.Tk()
+
+print(os.listdir('.minecraft/versions'))
 
 def SettingMain():
     
@@ -80,18 +83,21 @@ def WriteFile(path,data:str = ""): #文件写入函数
 Json_Ver = ReadFile('config/c.json')
 
 VerVar = tk.StringVar() #存放版本列表
-VerVar.set((ReadFile("config/c.json")['ver']['Minecraft'])) #存放版本列表注册到列表
+VerVar.set(os.listdir('.minecraft/versions')) #存放版本列表注册到列表
 
 VerMenu = tk.Listbox(MainForm,name='版本列表',listvariable=VerVar) #存放版本列表注册到列表
 
 VerLen_L = ttk.Label(MainForm,text="游戏版本数量:").grid(row=0,column=1)
 VerLen = ttk.Label(MainForm,text=str(len(ReadFile("config/c.json")['ver']['Minecraft']))).grid(row=0,column=2)
 
-JavaPthLable = ttk.Label(MainForm,text=' | Java路径:').grid(row=1,column=3)
+JavaPthLable = ttk.Label(MainForm,text='Java路径:').grid(row=2,column=0)
 JavaPth = ttk.Entry(MainForm)
 
 BigNC = ttk.Label(MainForm,text='最大内存:').grid(row=1,column=1)
 BiggestNC = ttk.Entry(MainForm)
+
+VL = ttk.Label(MainForm,text="版本名称(必须和json文件名一致)")
+VER = ttk.Entry(MainForm)
 
 def startgame():
     if JavaPth.get() == "":
@@ -104,14 +110,32 @@ def startgame():
         else:
             messagebox.showinfo("提示","启动成功")
             try:
-                SatartCS = JavaPth.get() + ""
+                Satart = "-XX:+UseG1GC "+"-XX:-UseAdaptiveSizePolicy "+\
+                "-XX:-OmitStackTraceInFastThrow "+"-Dfml.ignoreInvalidMinecraftCertificates=True "+\
+                "-Dfml.ignorePatchDiscrepancies=True "+"-Dlog4j2.formatMsgNoLookups=true "+\
+                "-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump "+\
+                "-Dminecraft.launcher.brand=MinecraftTechLauncher "+\
+                "-Dminecraft.launcher.version=0.0.3 "
+                if platform.version()[0:2] == '10':
+                    WinTen = '-Dos.name=Windows 10 " -Dos.version=10.0 '+\
+                    "-Xmn256m "+"-Xmx"+BiggestNC.get()+"m "+\
+                    ReadFile('.minecraft/versions/'+VER.get()+'/'+VER.get()+'.json')['mainClass']+" "
+                    SatartCS = Satart + WinTen
+                else:
+                    SatartCS = Satart + "-Xmn256m "+"-Xmx"+BiggestNC.get()+"m "+\
+                    " "+ReadFile('.minecraft/versions/'+VER.get()+'/'+VER.get()+'.json')['mainClass']+" "
+                print(SatartCS)
+                messagebox.showinfo("拼接信息:",SatartCS)
             except Exception as e:
+                messagebox.showerror("拼接信息 - ERROR","拼接失败!!!\n"+e)
                 print(e)
                 return e
 
+VL.grid(row=3,column=0)
+VER.grid(row=3,column=1)
 BiggestNC.grid(row=1,column=2)
 VerMenu.grid(row=0,column=0)
-JavaPth.grid(row=1,column=4)
+JavaPth.grid(row=2,column=1)
 StartGameBtn = ttk.Button(MainForm,text='启动游戏',command=startgame).grid(row=1,column=0) #启动游戏按钮
 ################# 启动器菜单栏 #################
 MainMenu = tk.Menu(MainForm,relief='solid')
