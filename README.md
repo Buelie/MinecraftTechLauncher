@@ -4,6 +4,15 @@
 
 ![image](https://github.com/Buelie/MinecraftTechLauncher/assets/111875719/3ce90c0f-697f-42b9-a039-932bc4011f7f)
 
+# 附加条款
+># QYL | statement
+>**By using the Software, you accept this Open Source License. If you do not accept the open source license, do not use the Software.**
+
+># QYL | content
+>* **The use of software revisions leads to personal privacy leakage, and the author has nothing to do with it**
+>* **To modify this software, you need to mark the original author in the software and modify the software name to distinguish it.And you need to open source your code and make it happen to the author or team**  
+>* **If you violate Article 2 of the above regulations, the author has the right to sue you and delete your relevant open source repository.**
+>* **Internet content is not under the control of the author, so the plaintiff's prosecution of content related to the Internet is equivalent to reporting content that is not related to the author, and the author is not responsible for anything.**
 
 # 常见问题
 
