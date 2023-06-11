@@ -5,9 +5,12 @@
 ![image](https://github.com/Buelie/MinecraftTechLauncher/assets/111875719/3ce90c0f-697f-42b9-a039-932bc4011f7f)
 
 # 附加条款
+> * 软件名称必须以 软件原名 - 区分名称 - 修改作者.exe 发布
+> * 不得创建与本软件名字相似且功能相似的项目及网站
+> * 如使用GPLv3协议发布修改软件，需以 修改软件名称 - 原作者.exe 发布
+
 ># QYL | statement
 >**By using the Software, you accept this Open Source License. If you do not accept the open source license, do not use the Software.**
-
 ># QYL | content
 >* **The use of software revisions leads to personal privacy leakage, and the author has nothing to do with it**
 >* **To modify this software, you need to mark the original author in the software and modify the software name to distinguish it.And you need to open source your code and make it happen to the author or team**  
