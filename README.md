@@ -1,4 +1,5 @@
 # MinecraftTechLauncher简介
+![icon](https://user-images.githubusercontent.com/111875719/245127705-519e6b9d-9583-42e1-a9f1-361ce90b6dec.png)
 
 **MinecraftTechLauncher是一个以Py+tk/ttk制作而成的《我的世界》启动器，它以实用性为主，所以它的页面有时候可能会使您感到不适，尤其是预览版**
 
@@ -16,6 +17,8 @@
 >* **To modify this software, you need to mark the original author in the software and modify the software name to distinguish it.And you need to open source your code and make it happen to the author or team**  
 >* **If you violate Article 2 of the above regulations, the author has the right to sue you and delete your relevant open source repository.**
 >* **Internet content is not under the control of the author, so the plaintiff's prosecution of content related to the Internet is equivalent to reporting content that is not related to the author, and the author is not responsible for anything.**
+
+![icon](https://user-images.githubusercontent.com/111875719/245127478-a2b9d076-db44-44ab-bf0f-13569fb88d35.png)
 
 # 常见问题
 
