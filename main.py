@@ -11,6 +11,8 @@ import tkinter.colorchooser
 import subprocess
 from tkinter import messagebox
 
+GameUserName = "TestUserName"
+ver = "MTC-急速启动-预览版-V0.0.5"
 MainForm = tk.Tk()
 
 print(os.listdir('plugin/'))
@@ -137,7 +139,7 @@ def startgame():
                 "-Dfml.ignorePatchDiscrepancies=True "+"-Dlog4j2.formatMsgNoLookups=true "+\
                 "-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump "+\
                 "-Dminecraft.launcher.brand=MinecraftTechLauncher "+\
-                "-Dminecraft.launcher.version=0.0.3 "
+                "-Dminecraft.launcher.version=0.0.3 "+"-username"+GameUserName+" "
                 if platform.version()[0:2] == '10':
                     WinTen = '-Dos.name=Windows 10 " -Dos.version=10.0 '+\
                     "-Xmn256m "+"-Xmx"+BiggestNC.get()+"m "+\
@@ -181,10 +183,39 @@ def Command():
                     " "+ReadFile('.minecraft/versions/'+VER.get()+'/'+VER.get()+'.json')['mainClass']+" "
                 print(SatartCS)
                 messagebox.showinfo("拼接信息:",SatartCS)
+            elif PluginCommand.get()[0:5] == "/json":
+                try:
+                    messagebox.showwarning("警告","该功能未完善，可能导致启动器或游戏崩溃")
+                    messagebox.showinfo("读取信息",str(ReadFile(PluginCommand.get()[6:-4])[PluginCommand.get()[-1:-3]]))
+                except Exception as error:
+                    messagebox.showerror("ERROR",error)
+                    print(error)
+            elif PluginCommand.get()[0:5] == "/java":
+                try:
+                    messagebox.showinfo("信息","已将默认Java路径更改为:"+PluginCommand.get()[6:-1])
+                except Exception as error:
+                    messagebox.ERROR("错误",error)
+                    print(error)
+            elif PluginCommand.get()[0:4] == "/ver":
+                try:
+                    if PluginCommand.get()[5:8] == "EXE":
+                        messagebox.showinfo("查询","当前启动器版本为:"+ver+"\n状态码:001")
+                    else:
+                        messagebox.showerror("错误","未找到<Object>\n状态码:024")
+                except Exception as error:
+                    messagebox.showerror("错误",error)
+                    print(error)
+            elif PluginCommand.get()[0:9] == "/UserName":
+                try:
+                    GameUserName = PluginCommand.get()[10:-1]
+                    messagebox.showinfo("信息","默认用户名已更改为:"+GameUserName)
+                except Exception as error:
+                    messagebox.showerror("错误",error)
+                    print(error)
             else:
                 pass
         except Exception as e:
-            messagebox.showerror("ERROE",e)
+            messagebox.showerror("ERROR",e)
 
 PluginBtn = ttk.Button(MainForm,text="执行",command=Command).grid(row=5,column=3)
 PluginCommand.grid(row=5,column=1)
