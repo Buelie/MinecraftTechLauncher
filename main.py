@@ -3,8 +3,12 @@ import os
 import json
 import tkinter as tk
 import tkinter.ttk as ttk
+import tkinter.messagebox
+import webbrowser
 
 # 文件检测/初始化
+if os.path.isdir('.minecraft/versions') == False:
+    os.makedirs('.minecraft/versions')
 if os.path.isdir('.minecraft/') == False:
     os.makedirs('.minecraft')
 if os.path.isdir('config') == False:
@@ -15,13 +19,24 @@ if os.path.isdir('config/res') == False:
     os.makedirs('config/res')
 if os.path.isdir('config/plugin') == False:
     os.makedirs('config/plugin')
+if os.path.isfile('config/cfg/ver.txt') == False:
+    with open('config/cfg/ver.txt','w') as f:
+        f.write("1.0")
+        f.close()
 if os.path.isfile('config/cfg/main.json') == False:
     Test = {"Java":""}
     with open('config/cfg/main.json','w') as f:
         fe = json.dumps(Test)
         f.write(fe)
         f.close()
-# 函数
+
+PluginList = os.listdir("config/plugin/")
+# 函数/类
+def ReadFile(path):
+    with open(path,'r') as f:
+        data = f.read()
+        f.close()
+    return data
 class JsonFile:
     """
     读取/写入JSON文件的类
@@ -64,6 +79,26 @@ class game:
         .replace("${user_type}",user_type)
         return parameter
 
+def PluginWind():
+    PluginWindFram = tk.Toplevel()
+    PluginWindFram.geometry("600x450+374+182")
+    PluginWindFram.title("MTC/MTL - 插件")
+    PluginWindFram.resizable(False,False)
+
+    PluginLable = ttk.Label(PluginWindFram,text="插件列表").pack()
+    List = tk.Listbox(PluginWindFram)
+    for item in PluginList:
+        List.insert("end",item)
+    List.pack()
+
+
+def HelpExterior():
+    answer = tk.messagebox.askokcancel('确定前往官网获取帮助','选择确定查看，选择取消关闭')
+    if answer:
+        webbrowser.open('https://github.com/Buelie/MinecraftTechLauncher/')
+    else:
+        pass
+
 # 调试模式
 """
 while True:
@@ -84,6 +119,25 @@ while True:
 
 MainWind = tk.Tk()
 
+VerLable = ttk.Label(MainWind,text="版本列表:",font=("楷体",16)).pack()
+
+"""
+版本列表
+VerVar变量用于获取目录下所有版本
+"""
+VerVar = tk.StringVar() 
+VerVar.set(os.listdir('.minecraft/versions'))
+VerList = tk.Listbox(MainWind,listvariable=VerVar).pack()
+
+VerActive = ttk.Label(MainWind,text="当前选中版本:"+str(ReadFile('config/cfg/ver.txt')),font=("楷体",16)).pack()
+VerLen = ttk.Label(MainWind,text="版本数量:"+str(len(os.listdir('.minecraft/versions'))),font=("楷体",16)).pack()
+
+"""
+启动游戏按钮
+绑定StartGame函数
+"""
+StartGameBtn = ttk.Button(MainWind,text="启动游戏",width=30).pack()
+
 """
 菜单 >>>
 一级菜单:<启动器> | <下载> | <高级> | <帮助>
@@ -96,7 +150,7 @@ MainMenu = tk.Menu(MainWind,relief='solid')
 
 Launcher = tk.Menu(MainMenu,tearoff=False)
 Launcher.add_command(label="设置")
-Launcher.add_command(label="插件")
+Launcher.add_command(label="插件",command=PluginWind)
 Launcher.add_command(label="检查错误")
 Launcher.add_command(label="退出",command=MainWind.quit)
 MainMenu.add_cascade(label="启动器",menu=Launcher)
@@ -109,7 +163,17 @@ Download.add_command(label="整合包")
 Download.add_command(label="光影包")
 MainMenu.add_cascade(label="下载",menu=Download)
 
+Senior = tk.Menu(MainMenu,tearoff=False)
+Senior.add_command(label="高级设置")
+Senior.add_command(label="插件",command=PluginWind)
+Senior.add_command(label="游戏参数")
+Senior.add_command(label="高级游戏设置")
+MainMenu.add_cascade(label="高级",menu=Senior)
 
+Help = tk.Menu(MainMenu,tearoff=False)
+Help.add_command(label="帮助(软件内)")
+Help.add_command(label="帮助(软件外)",command=HelpExterior)
+MainMenu.add_cascade(label="帮助",menu=Help)
 
 # - 分割线 -
 
