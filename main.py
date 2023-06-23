@@ -87,14 +87,33 @@ MainWind = tk.Tk()
 """
 菜单 >>>
 一级菜单:<启动器> | <下载> | <高级> | <帮助>
-二级菜单:[启动器]:<设置> | <插件> | <检测错误>
+二级菜单:[启动器]:<设置> | <插件> | <检测错误> | <退出>
         :[下载]:<游戏本体> | <Mod> | <资源包> | <整合包> | <光影包>
         :[高级]:<高级设置> | <插件> | <游戏参数> | <高级游戏设置>
         :[帮助]:<帮助(软件内)> | <帮助(软件外)>
 """
+MainMenu = tk.Menu(MainWind,relief='solid')
+
+Launcher = tk.Menu(MainMenu,tearoff=False)
+Launcher.add_command(label="设置")
+Launcher.add_command(label="插件")
+Launcher.add_command(label="检查错误")
+Launcher.add_command(label="退出",command=MainWind.quit)
+MainMenu.add_cascade(label="启动器",menu=Launcher)
+
+Download = tk.Menu(MainMenu,tearoff=False)
+Download.add_command(label="游戏本体")
+Download.add_command(label="Mod")
+Download.add_command(label="资源包")
+Download.add_command(label="整合包")
+Download.add_command(label="光影包")
+MainMenu.add_cascade(label="下载",menu=Download)
+
+
 
 # - 分割线 -
 
+MainWind.config(menu=MainMenu)
 MainWind.title('MinecraftTechLauncher')
 MainWind.geometry("600x450+374+182")
 MainWind.resizable(False,False)
