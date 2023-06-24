@@ -83,7 +83,7 @@ class game:
         self.cfg = cfg
 
     # TODO:待完成MainClass的拼接
-    def build(self,auth_player_name : str = "test",version_name : str = "1.0",game_directory : str = "",assets_root : str = "",assets_index_name : str = "1.0",auth_uuid : str = "12345678-012345678921-3456709312X456",auth_access_token : str = " ",user_properties : str = "{}",user_type : str = "legacy"):
+    def build(self,auth_player_name : str = "test",version_name : str = "1.19.3",game_directory : str = "",assets_root : str = "",assets_index_name : str = "1.0",auth_uuid : str = "12345678-012345678921-3456709312X456",auth_access_token : str = " ",user_properties : str = "{}",user_type : str = "legacy"):
         default = "--username ${auth_player_name} --version ${version_name} --gameDir ${game_directory} --assetsDir ${assets_root} --assetIndex ${assets_index_name} --uuid ${auth_uuid} --accessToken ${auth_access_token} --userProperties ${user_properties} --userType ${user_type}"
         parameter = default.replace("${auth_player_name}",auth_player_name).replace("${version_name}",version_name)\
         .replace("${game_directory}",game_directory).replace("${assets_root}",assets_root)\
@@ -132,6 +132,14 @@ while True:
 
 MainWind = tk.Tk()
 
+"""
+子窗口
+"""
+def DownloadWind():
+    Wind = tk.Toplevel()
+    Wind.geometry("600x450+374+182")
+    Wind.title("MTC/MTL - 下载")
+
 version_manifest_json = requests.get("https://bmclapi2.bangbang93.com/mc/game/version_manifest.json")
 VerLable = ttk.Label(MainWind,text="版本列表:",font=("楷体",16)).pack()
 
@@ -151,17 +159,29 @@ VerLen = ttk.Label(MainWind,text="版本数量:"+str(len(os.listdir('.minecraft/
 绑定StartGame函数
 """
 def StartGame():
+    ver_cfg = ReadFile('config/cfg/ver.txt')
     par = JsonFile("config/cfg/main.json").Read()
-    command = '"' + par["Java"] + '\\java.exe"' + " -Xmx" + par["xmx"] + "m"\
-    + " -Dfml.ignoreInvalidMinecraftCertificates=true" +\
-    " -Dfml.ignorePatchDiscrepancies=true" + ' -Djava.library.path="'+\
-    'Minecraft\\versions\\' + ReadFile('config/cfg/ver.txt') + "\\" +\
-    ReadFile('config/cfg/ver.txt') + '-natives"'
-    return command
+    if par["JavaPath"] == True:
+        command = '\"' + par["Java"] + '\\java.exe\"' + " -Xmx" + par["xmx"] + "m"\
+        + " -Dfml.ignoreInvalidMinecraftCertificates=true" +\
+        " -Dfml.ignorePatchDiscrepancies=true" + ' -Djava.library.path="'+\
+        'Minecraft\\versions\\' + ver_cfg + "\\" + ver_cfg + '-natives"' + " " + game().build() +\
+        " " +JsonFile(".minecraft/versions/"+ver_cfg+"/"+ver_cfg+".json").Read()["mainClass"]
+        os.system(command)
+        return command
+    elif par["JavaPath"] == False:
+        command = 'java' + " -Xmx" + par["xmx"] + "m"\
+        + " -Dfml.ignoreInvalidMinecraftCertificates=true" +\
+        " -Dfml.ignorePatchDiscrepancies=true" + ' -Djava.library.path="'+\
+        'Minecraft\\versions\\' + ver_cfg + "\\" + ver_cfg + '-natives"' + " " + game().build() +\
+        " " +JsonFile(".minecraft/versions/"+ver_cfg+"/"+ver_cfg+".json").Read()["mainClass"]
+        os.system(command)
+        return command
 
+print(StartGame())
 #print(version_manifest_json.text)
 #print(JsonFile("config/cfg/main.json").Read()["Java"])
-StartGameBtn = ttk.Button(MainWind,text="启动游戏",width=30).pack()
+StartGameBtn = ttk.Button(MainWind,text="启动游戏",width=30,command=StartGame).pack()
 
 """
 菜单 >>>
