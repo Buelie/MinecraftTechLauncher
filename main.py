@@ -5,8 +5,21 @@ import tkinter as tk
 import tkinter.ttk as ttk
 import tkinter.messagebox
 import webbrowser
+import requests
 
 # 文件检测/初始化
+if os.path.isdir('.minecraft/assets') == False:
+    os.makedirs('.minecraft/assets')
+if os.path.isdir('.minecraft/resourcepacks') == False:
+    os.makedirs('.minecraft/resourcepacks')
+if os.path.isdir('.minecraft/saves') == False:
+    os.makedirs('.minecraft/saves')
+if os.path.isdir('.minecraft/mods') == False:
+    os.makedirs('.minecraft/mods')
+if os.path.isdir('.minecraft/logs') == False:
+    os.makedirs('.minecraft/logs')
+if os.path.isdir('.minecraft/libraries') == False:
+    os.makedirs('.minecraft/libraries')
 if os.path.isdir('.minecraft/versions') == False:
     os.makedirs('.minecraft/versions')
 if os.path.isdir('.minecraft/') == False:
@@ -21,10 +34,10 @@ if os.path.isdir('config/plugin') == False:
     os.makedirs('config/plugin')
 if os.path.isfile('config/cfg/ver.txt') == False:
     with open('config/cfg/ver.txt','w') as f:
-        f.write("1.0")
+        f.write("1.13")
         f.close()
 if os.path.isfile('config/cfg/main.json') == False:
-    Test = {"Java":""}
+    Test = {"Java":"C:\\Program Files\\Java\\jdk-17\\bin"}
     with open('config/cfg/main.json','w') as f:
         fe = json.dumps(Test)
         f.write(fe)
@@ -47,7 +60,7 @@ class JsonFile:
         self.path = path
 
     def Read(self):
-        with open(self.path,'w',encoding='utf-8') as f:
+        with open(self.path,'r',encoding='utf-8') as f:
             Data = json.load(f)
             f.close()
         return Data
@@ -119,6 +132,7 @@ while True:
 
 MainWind = tk.Tk()
 
+version_manifest_json = requests.get("https://bmclapi2.bangbang93.com/mc/game/version_manifest.json")
 VerLable = ttk.Label(MainWind,text="版本列表:",font=("楷体",16)).pack()
 
 """
@@ -136,6 +150,17 @@ VerLen = ttk.Label(MainWind,text="版本数量:"+str(len(os.listdir('.minecraft/
 启动游戏按钮
 绑定StartGame函数
 """
+def StartGame():
+    par = JsonFile("config/cfg/main.json").Read()
+    command = '"' + par["Java"] + '\\java.exe"' + " -Xmx" + par["xmx"] + "m"\
+    + " -Dfml.ignoreInvalidMinecraftCertificates=true" +\
+    " -Dfml.ignorePatchDiscrepancies=true" + ' -Djava.library.path="'+\
+    'Minecraft\\versions\\' + ReadFile('config/cfg/ver.txt') + "\\" +\
+    ReadFile('config/cfg/ver.txt') + '-natives"'
+    return command
+
+#print(version_manifest_json.text)
+#print(JsonFile("config/cfg/main.json").Read()["Java"])
 StartGameBtn = ttk.Button(MainWind,text="启动游戏",width=30).pack()
 
 """
