@@ -51,3 +51,8 @@ __开发者?看看这里:[点我有惊喜！]()__
 
 **项目官网：<https://buelie.github.io/MTC-web/>**
 
+# 贡献者
+* [ ] **[Zaitonn](https://github.com/Zaitonn)**
+* [x] **[Buelie](https://github.com/Buelie)**
+* [ ] **[WindAF](https://github.com/WindAF)**
+> **勾选的代表有PR贡献，未勾选一般代表问题或者解决方案贡献(当然，还有其他)**
