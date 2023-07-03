@@ -6,7 +6,7 @@ import tkinter.ttk as ttk
 import tkinter.messagebox
 import webbrowser
 import requests
-
+#1641780513
 # 文件检测/初始化
 if os.path.isdir('.minecraft/assets') == False:
     os.makedirs('.minecraft/assets')
@@ -33,17 +33,22 @@ if os.path.isdir('config/res') == False:
 if os.path.isdir('config/plugin') == False:
     os.makedirs('config/plugin')
 if os.path.isfile('config/cfg/ver.txt') == False:
+    with open('config/cfg/plugin.json','w') as f:
+        f.write('{\n"$PluginList":["api.json"]\n}')
+        f.close()
+if os.path.isfile('config/cfg/ver.txt') == False:
     with open('config/cfg/ver.txt','w') as f:
         f.write("1.13")
         f.close()
 if os.path.isfile('config/cfg/main.json') == False:
-    Test = {"Java":"C:\\Program Files\\Java\\jdk-17\\bin"}
+    Test = {"Java":"C:\\Program Files\\Java\\jdk-17\\bin","xmx":"1024","JavaPath":True}
     with open('config/cfg/main.json','w') as f:
         fe = json.dumps(Test)
         f.write(fe)
         f.close()
 
 PluginList = os.listdir("config/plugin/")
+
 # 函数/类
 def ReadFile(path):
     with open(path,'r') as f:
@@ -92,6 +97,8 @@ class game:
         .replace("${user_type}",user_type)
         return parameter
 
+PluginListTwo = JsonFile('config/cfg/plugin.json').Read()["$PluginList"]
+
 def PluginWind():
     PluginWindFram = tk.Toplevel()
     PluginWindFram.geometry("600x450+374+182")
@@ -103,6 +110,11 @@ def PluginWind():
     for item in PluginList:
         List.insert("end",item)
     List.pack()
+    PluginLableTwo = ttk.Label(PluginWindFram,text="已激活插件列表").pack()
+    ListTwo = tk.Listbox(PluginWindFram)
+    for item in PluginListTwo:
+        ListTwo.insert("end",item)
+    ListTwo.pack()
 
 
 def HelpExterior():
@@ -178,7 +190,6 @@ def StartGame():
         os.system(command)
         return command
 
-print(StartGame())
 #print(version_manifest_json.text)
 #print(JsonFile("config/cfg/main.json").Read()["Java"])
 StartGameBtn = ttk.Button(MainWind,text="启动游戏",width=30,command=StartGame).pack()
