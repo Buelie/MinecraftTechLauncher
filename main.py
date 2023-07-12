@@ -1,6 +1,7 @@
 
 import os
 import json
+from ttkbootstrap import Style
 import tkinter as tk
 import tkinter.ttk as ttk
 import tkinter.messagebox
@@ -124,6 +125,22 @@ def HelpExterior():
     else:
         pass
 
+def Settings():
+    WindMain = tk.Toplevel()
+    WindMain.geometry("600x450+374+182")
+    WindMain.title("MTC/MTL - 设置")
+    WindMain.resizable(False,False)
+
+    Slb = ttk.Label(WindMain,text="主题样式 : ").grid(row=0,column=0)
+    Sle = ttk.Entry(WindMain)
+    def a():
+        MainWind = Style(theme=Sle.get()).master
+    Sle.grid(row=0,column=1)
+    Sln = ttk.Button(WindMain,text="应用",command=a).grid(row=0,column=2)
+
+def Download():
+    pass
+
 # 调试模式
 """
 while True:
@@ -142,7 +159,7 @@ while True:
 
 # GUI
 
-MainWind = tk.Tk()
+MainWind = Style(theme='cyborg').master
 
 """
 子窗口
@@ -152,8 +169,10 @@ def DownloadWind():
     Wind.geometry("600x450+374+182")
     Wind.title("MTC/MTL - 下载")
 
+MainFrame = tk.Frame(MainWind).pack()
+
 version_manifest_json = requests.get("https://bmclapi2.bangbang93.com/mc/game/version_manifest.json")
-VerLable = ttk.Label(MainWind,text="版本列表:",font=("楷体",16)).pack()
+VerLable = tk.Label(MainFrame,text="版本列表:",font=("楷体",16),bg="#333333",fg="#FFF").pack()
 
 """
 版本列表
@@ -161,10 +180,10 @@ VerVar变量用于获取目录下所有版本
 """
 VerVar = tk.StringVar() 
 VerVar.set(os.listdir('.minecraft/versions'))
-VerList = tk.Listbox(MainWind,listvariable=VerVar).pack()
+VerList = tk.Listbox(MainFrame,listvariable=VerVar).pack()
 
-VerActive = ttk.Label(MainWind,text="当前选中版本:"+str(ReadFile('config/cfg/ver.txt')),font=("楷体",16)).pack()
-VerLen = ttk.Label(MainWind,text="版本数量:"+str(len(os.listdir('.minecraft/versions'))),font=("楷体",16)).pack()
+VerActive = ttk.Label(MainFrame,text="当前选中版本:"+str(ReadFile('config/cfg/ver.txt')),font=("楷体",16)).pack()
+VerLen = ttk.Label(MainFrame,text="版本数量:"+str(len(os.listdir('.minecraft/versions'))),font=("楷体",16)).pack()
 
 """
 启动游戏按钮
@@ -174,10 +193,10 @@ def StartGame():
     ver_cfg = ReadFile('config/cfg/ver.txt')
     par = JsonFile("config/cfg/main.json").Read()
     if par["JavaPath"] == True:
-        command = '\"' + par["Java"] + '\\java.exe\"' + " -Xmx" + par["xmx"] + "m"\
+        command = '\"' + par["Java"] + '\\javaw.exe\"' + " -Xmx" + par["xmx"] + "m"\
         + " -Dfml.ignoreInvalidMinecraftCertificates=true" +\
         " -Dfml.ignorePatchDiscrepancies=true" + ' -Djava.library.path="'+\
-        'Minecraft\\versions\\' + ver_cfg + "\\" + ver_cfg + '-natives"' + " " + game().build() +\
+        'Minecraft\\versions\\' + ver_cfg + "\\" + ver_cfg + ' -natives"' + " " + game().build() +\
         " " +JsonFile(".minecraft/versions/"+ver_cfg+"/"+ver_cfg+".json").Read()["mainClass"]
         os.system(command)
         return command
@@ -185,14 +204,14 @@ def StartGame():
         command = 'java' + " -Xmx" + par["xmx"] + "m"\
         + " -Dfml.ignoreInvalidMinecraftCertificates=true" +\
         " -Dfml.ignorePatchDiscrepancies=true" + ' -Djava.library.path="'+\
-        'Minecraft\\versions\\' + ver_cfg + "\\" + ver_cfg + '-natives"' + " " + game().build() +\
+        'Minecraft\\versions\\' + ver_cfg + "\\" + ver_cfg + ' -natives"' + " " + game().build() +\
         " " +JsonFile(".minecraft/versions/"+ver_cfg+"/"+ver_cfg+".json").Read()["mainClass"]
         os.system(command)
         return command
 
 #print(version_manifest_json.text)
 #print(JsonFile("config/cfg/main.json").Read()["Java"])
-StartGameBtn = ttk.Button(MainWind,text="启动游戏",width=30,command=StartGame).pack()
+StartGameBtn = ttk.Button(MainFrame,text="启动游戏",width=30,command=StartGame).pack()
 
 """
 菜单 >>>
@@ -202,10 +221,10 @@ StartGameBtn = ttk.Button(MainWind,text="启动游戏",width=30,command=StartGam
         :[高级]:<高级设置> | <插件> | <游戏参数> | <高级游戏设置>
         :[帮助]:<帮助(软件内)> | <帮助(软件外)>
 """
-MainMenu = tk.Menu(MainWind,relief='solid')
+MainMenu = tk.Menu(MainWind,relief='solid',bg="#333333")
 
 Launcher = tk.Menu(MainMenu,tearoff=False)
-Launcher.add_command(label="设置")
+Launcher.add_command(label="设置",command=Settings)
 Launcher.add_command(label="插件",command=PluginWind)
 Launcher.add_command(label="检查错误")
 Launcher.add_command(label="退出",command=MainWind.quit)
@@ -233,7 +252,7 @@ MainMenu.add_cascade(label="帮助",menu=Help)
 
 # - 分割线 -
 
-MainWind.config(menu=MainMenu)
+MainWind.config(menu=MainMenu,bg="#060606")
 MainWind.title('MinecraftTechLauncher')
 MainWind.geometry("600x450+374+182")
 MainWind.resizable(False,False)
