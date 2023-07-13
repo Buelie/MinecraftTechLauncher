@@ -1,4 +1,4 @@
-
+from ttkbootstrap.constants import *
 import os
 import json
 from ttkbootstrap import Style
@@ -39,7 +39,11 @@ if os.path.isfile('config/cfg/ver.txt') == False:
         f.close()
 if os.path.isfile('config/cfg/ver.txt') == False:
     with open('config/cfg/ver.txt','w') as f:
-        f.write("1.13")
+        f.write("")
+        f.close()
+if os.path.isfile('config/cfg/username.txt') == False:
+    with open('config/cfg/username.txt','w') as f:
+        f.write("test")
         f.close()
 if os.path.isfile('config/cfg/main.json') == False:
     Test = {"Java":"C:\\Program Files\\Java\\jdk-17\\bin","xmx":"1024","JavaPath":True}
@@ -77,6 +81,12 @@ class JsonFile:
             f.close()
         return Data
 
+    def FileRead(self):
+        with open(self.path,'r',encoding='utf-8') as f:
+            Data = f.read()
+            f.close()
+        return Data
+
 class game:
     """
     游戏相关类
@@ -89,7 +99,7 @@ class game:
         self.cfg = cfg
 
     # TODO:待完成MainClass的拼接
-    def build(self,auth_player_name : str = "test",version_name : str = "1.19.3",game_directory : str = "",assets_root : str = "",assets_index_name : str = "1.0",auth_uuid : str = "12345678-012345678921-3456709312X456",auth_access_token : str = " ",user_properties : str = "{}",user_type : str = "legacy"):
+    def build(self,auth_player_name : str = str(JsonFile("config/cfg/username.txt").FileRead()),version_name : str = JsonFile("config/cfg/ver.txt").FileRead(),game_directory : str = "",assets_root : str = "",assets_index_name : str = "1.0",auth_uuid : str = "12345678-012345678921-3456709312X456",auth_access_token : str = " ",user_properties : str = "{}",user_type : str = "legacy"):
         default = "--username ${auth_player_name} --version ${version_name} --gameDir ${game_directory} --assetsDir ${assets_root} --assetIndex ${assets_index_name} --uuid ${auth_uuid} --accessToken ${auth_access_token} --userProperties ${user_properties} --userType ${user_type}"
         parameter = default.replace("${auth_player_name}",auth_player_name).replace("${version_name}",version_name)\
         .replace("${game_directory}",game_directory).replace("${assets_root}",assets_root)\
@@ -134,12 +144,31 @@ def Settings():
     Slb = ttk.Label(WindMain,text="主题样式 : ").grid(row=0,column=0)
     Sle = ttk.Entry(WindMain)
     def a():
-        MainWind = Style(theme=Sle.get()).master
+        try:
+            MainWind = Style(theme=Sle.get()).master
+            tkinter.messagebox.showinfo(title="提示",message="修改成功!")
+        except Exception as e:
+            print(e)
+            tkinter.messagebox.showwarning(title="错误",message="样式不可用")
+            tkinter.messagebox.showwarning(title="错误",message=str(e))
     Sle.grid(row=0,column=1)
     Sln = ttk.Button(WindMain,text="应用",command=a).grid(row=0,column=2)
 
-def Download():
-    pass
+    NameSetLabel = ttk.Label(WindMain,text="默认用户名 : ").grid(row=1,column=0)
+    NameSet = ttk.Entry(WindMain)
+    def b():
+        try:
+            with open("config/cfg/username.txt",'w') as f:
+                f.write(NameSet.get())
+                f.close()
+            UserName = JsonFile("config/cfg/username.txt").FileRead()
+            MainWind.title(f'MinecraftTechLauncher - 当前用户名:{str(UserName)}')
+            tkinter.messagebox.showinfo(title="提示",message="修改成功!")
+        except Exception as e:
+            print(e)
+            tkinter.messagebox.showwarning(title="错误",message=str(e))
+    NameSet.grid(row=1,column=1)
+    NameSetBtn = ttk.Button(WindMain,text="应用",command=b).grid(row=1,column=2)
 
 # 调试模式
 """
@@ -160,6 +189,7 @@ while True:
 # GUI
 
 MainWind = Style(theme='cyborg').master
+UserName = JsonFile("config/cfg/username.txt").FileRead()
 
 """
 子窗口
@@ -190,24 +220,30 @@ VerLen = ttk.Label(MainFrame,text="版本数量:"+str(len(os.listdir('.minecraft
 绑定StartGame函数
 """
 def StartGame():
-    ver_cfg = ReadFile('config/cfg/ver.txt')
-    par = JsonFile("config/cfg/main.json").Read()
-    if par["JavaPath"] == True:
-        command = '\"' + par["Java"] + '\\javaw.exe\"' + " -Xmx" + par["xmx"] + "m"\
-        + " -Dfml.ignoreInvalidMinecraftCertificates=true" +\
-        " -Dfml.ignorePatchDiscrepancies=true" + ' -Djava.library.path="'+\
-        'Minecraft\\versions\\' + ver_cfg + "\\" + ver_cfg + ' -natives"' + " " + game().build() +\
-        " " +JsonFile(".minecraft/versions/"+ver_cfg+"/"+ver_cfg+".json").Read()["mainClass"]
-        os.system(command)
-        return command
-    elif par["JavaPath"] == False:
-        command = 'java' + " -Xmx" + par["xmx"] + "m"\
-        + " -Dfml.ignoreInvalidMinecraftCertificates=true" +\
-        " -Dfml.ignorePatchDiscrepancies=true" + ' -Djava.library.path="'+\
-        'Minecraft\\versions\\' + ver_cfg + "\\" + ver_cfg + ' -natives"' + " " + game().build() +\
-        " " +JsonFile(".minecraft/versions/"+ver_cfg+"/"+ver_cfg+".json").Read()["mainClass"]
-        os.system(command)
-        return command
+    try:
+        ver_cfg = ReadFile('config/cfg/ver.txt')
+        par = JsonFile("config/cfg/main.json").Read()
+        if par["JavaPath"] == True:
+            command = '\"' + par["Java"] + '\\javaw.exe\"' + " -Xmx" + par["xmx"] + "m"\
+            + " -Dfml.ignoreInvalidMinecraftCertificates=true" +\
+            " -Dfml.ignorePatchDiscrepancies=true" + ' -Djava.library.path="'+\
+            'Minecraft\\versions\\' + ver_cfg + "\\" + ver_cfg + ' -natives"' + " " + game().build() +\
+            " " +JsonFile(".minecraft/versions/"+ver_cfg+"/"+ver_cfg+".json").Read()["mainClass"]
+            os.system(command)
+            return command
+        elif par["JavaPath"] == False:
+            command = 'java' + " -Xmx" + par["xmx"] + "m"\
+            +" -Dfml.ignoreInvalidMinecraftCertificates=true" +\
+            " -Dfml.ignorePatchDiscrepancies=true" + ' -Djava.library.path="'+\
+            'Minecraft\\versions\\' + ver_cfg + "\\" + ver_cfg + ' -natives"' + " " + game().build() +\
+            " " +JsonFile(".minecraft/versions/"+ver_cfg+"/"+ver_cfg+".json").Read()["mainClass"]
+            os.system(command)
+            print(command)
+            return command
+        tkinter.messagebox.showinfo(title="提示",message="启动成功,拼接参数如下:\n"+str(command))
+    except Exception as e:
+        print(e)
+        tkinter.messagebox.showwarning(title="错误",message=str(e))
 
 #print(version_manifest_json.text)
 #print(JsonFile("config/cfg/main.json").Read()["Java"])
@@ -231,11 +267,11 @@ Launcher.add_command(label="退出",command=MainWind.quit)
 MainMenu.add_cascade(label="启动器",menu=Launcher)
 
 Download = tk.Menu(MainMenu,tearoff=False)
-Download.add_command(label="游戏本体")
-Download.add_command(label="Mod")
-Download.add_command(label="资源包")
-Download.add_command(label="整合包")
-Download.add_command(label="光影包")
+Download.add_command(label="游戏本体",command=DownloadWind)
+Download.add_command(label="Mod",command=DownloadWind)
+Download.add_command(label="资源包",command=DownloadWind)
+Download.add_command(label="整合包",command=DownloadWind)
+Download.add_command(label="光影包",command=DownloadWind)
 MainMenu.add_cascade(label="下载",menu=Download)
 
 Senior = tk.Menu(MainMenu,tearoff=False)
@@ -253,7 +289,7 @@ MainMenu.add_cascade(label="帮助",menu=Help)
 # - 分割线 -
 
 MainWind.config(menu=MainMenu,bg="#060606")
-MainWind.title('MinecraftTechLauncher')
+MainWind.title(f'MinecraftTechLauncher - 当前用户名:{str(UserName)}')
 MainWind.geometry("600x450+374+182")
 MainWind.resizable(False,False)
 MainWind.mainloop()
