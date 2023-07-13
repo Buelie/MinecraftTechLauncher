@@ -7,8 +7,8 @@
 
 # 自定义样式
 
-![image](https://github.com/Buelie/MinecraftTechLauncher/assets/111875719/3de223ee-dcfa-428a-87f4-4c5a3d766edd)
-**图1-1**<br>
+![录制_2023_07_13_12_39_12_282](https://github.com/Buelie/MinecraftTechLauncher/assets/111875719/5c0e8e88-0685-4cc0-9bbe-4c9a90aed9b2)
+
 ![image](https://github.com/Buelie/MinecraftTechLauncher/assets/111875719/6f320b54-1602-47ef-a00a-13f58fb66245)
 **图1-2**<br>
 
