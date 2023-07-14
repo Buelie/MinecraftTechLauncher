@@ -135,6 +135,20 @@ def HelpExterior():
     else:
         pass
 
+def GameHeadSet():
+    WindMaino = tk.Toplevel()
+    WindMaino.geometry("600x450+374+182")
+    WindMaino.title("MTC/MTL - 设置")
+    WindMaino.resizable(False,False)
+
+    XmxLabel = ttk.Label(WindMaino,text="最小内存(MB) : ").grid(row=0,column=0)
+    XmxEntry = ttk.Entry(WindMaino)
+    XmxEntry.grid(row=0,column=1)
+    XmxBtn = ttk.Button(WindMaino,text="应用").grid(row=0,column=2)
+    XmsLabel = ttk.Label(WindMaino,text="最大内存(MB) : ").grid(row=1,column=0)
+    XmsEntry = ttk.Entry(WindMaino)
+    XmsEntry.grid(row=1,column=1)
+    XmsBtn = ttk.Button(WindMaino,text="应用").grid(row=1,column=2)
 def Settings():
     WindMain = tk.Toplevel()
     WindMain.geometry("600x450+374+182")
@@ -308,7 +322,7 @@ Senior = tk.Menu(MainMenu,tearoff=False)
 Senior.add_command(label="高级设置")
 Senior.add_command(label="插件",command=PluginWind)
 Senior.add_command(label="游戏参数")
-Senior.add_command(label="高级游戏设置")
+Senior.add_command(label="高级游戏设置",command=GameHeadSet)
 MainMenu.add_cascade(label="高级",menu=Senior)
 
 Help = tk.Menu(MainMenu,tearoff=False)
