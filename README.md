@@ -10,6 +10,10 @@
 * [ ] **服务端&客户端并存一体**
 * [ ] **自动补全**
 * [ ] **全面资源下载**
+* [ ] **高度可扩展性**
+
+# 开发者
+**再等等啦，API很快就造好轮子啦**
 
 # 下载
 **如果您是Windows系统的用户，可以从[`releases`](https://github.com/Buelie/MinecraftTechLauncher/releases)下载您需要的版本(冷知识:Beta版会比正式版更稳定欸)。如果您是Linux或者MacOS用户，您可以下载源代码运行。**
