@@ -210,7 +210,18 @@ VerVar变量用于获取目录下所有版本
 """
 VerVar = tk.StringVar() 
 VerVar.set(os.listdir('.minecraft/versions'))
-VerList = tk.Listbox(MainFrame,listvariable=VerVar).pack()
+VerList = tk.Listbox(MainFrame,listvariable=VerVar)
+def VerListDef():
+    aver = os.listdir('.minecraft/versions')
+    try:
+        ac = VerList.curselection()
+        print("选中版本:"+str(ac))
+        tkinter.messagebox.showinfo(title="提示",message="当前选中版本:"+str(ac))
+    except Exception as e:
+        print(e)
+        tkinter.messagebox.showwarning(title="错误",message=e)
+VerList.bind('<Button-1>',VerListDef)
+VerList.pack()
 
 VerActive = ttk.Label(MainFrame,text="当前选中版本:"+str(ReadFile('config/cfg/ver.txt')),font=("楷体",16)).pack()
 VerLen = ttk.Label(MainFrame,text="版本数量:"+str(len(os.listdir('.minecraft/versions'))),font=("楷体",16)).pack()
@@ -219,6 +230,21 @@ VerLen = ttk.Label(MainFrame,text="版本数量:"+str(len(os.listdir('.minecraft
 启动游戏按钮
 绑定StartGame函数
 """
+def cs():
+    ver_cfg = ReadFile('config/cfg/ver.txt')
+    par = JsonFile("config/cfg/main.json").Read()
+    try:
+        command = '\"' + par["Java"] + '\\javaw.exe\"' + " -Xmx" + par["xmx"] + "m"\
+        + " -Dfml.ignoreInvalidMinecraftCertificates=true" +\
+        " -Dfml.ignorePatchDiscrepancies=true" + ' -Djava.library.path="'+\
+        'Minecraft\\versions\\' + ver_cfg + "\\" + ver_cfg + ' -natives"' + " " + game().build() +\
+        " " +JsonFile(".minecraft/versions/"+ver_cfg+"/"+ver_cfg+".json").Read()["mainClass"]
+        tkinter.messagebox.showinfo(title="提示",message="拼接参数如下:\n"+command)
+        return command
+    except Exception as e:
+        print(e)
+        tkinter.messagebox.showwarning(title="错误",message=str(e))
+
 def StartGame():
     try:
         ver_cfg = ReadFile('config/cfg/ver.txt')
@@ -248,6 +274,10 @@ def StartGame():
 #print(version_manifest_json.text)
 #print(JsonFile("config/cfg/main.json").Read()["Java"])
 StartGameBtn = ttk.Button(MainFrame,text="启动游戏",width=30,command=StartGame).pack()
+BtnLen = ttk.Label(MainFrame,text="——————",font=("楷体",16)).pack()
+GetGameBtn = ttk.Button(MainFrame,text="获取当前游戏版本",width=30,command=VerListDef).pack()
+BtnBen = ttk.Label(MainFrame,text="——————",font=("楷体",16)).pack()
+GetAuthBtn = ttk.Button(MainFrame,text="获取拼接参数",width=30,command=cs).pack()
 
 """
 菜单 >>>
