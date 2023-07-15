@@ -20,4 +20,10 @@
 
 # 贡献者
 * **[Buelie[代码/底层]](https://github.com/Buelie)**
-* **[Zaitonn[问题/PR]](https://github.com/Zaitonn)**
+
+# 鸣谢
+* **[BMCLAPI / MCBBS](https://bmclapidoc.bangbang93.com/) 提供镜像下载源**
+* **[modrinth](https://modrinth.com/) 提供下载源**
+* **[curseforge](https://www.curseforge.com/) 提供下载源**
+* **[Zaitonn](https://github.com/Zaitonn)**
+*  **[Minecraft 中文Wiki](https://minecraft.fandom.com/zh/wiki/%E6%95%99%E7%A8%8B/%E7%BC%96%E5%86%99%E5%90%AF%E5%8A%A8%E5%99%A8) 提供的逻辑教程**
