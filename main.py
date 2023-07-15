@@ -60,6 +60,34 @@ def ReadFile(path):
         data = f.read()
         f.close()
     return data
+class down():
+    __path = "config/down/"
+    def __init__(self,path : str = __path,url : str = "",filename : str = "test",hz : str = "json") -> None:
+        self.path = path
+        self.url = url
+        self.hz = hz
+        self.filename = filename
+
+    def DownFile(self) -> str:
+        try:
+            if self.path == "":
+                tkinter.messagebox.showwarning(title="错误",message="<Path>不能为空")
+            elif self.path != "":
+                if self.url == "":
+                    tkinter.messagebox.showwarning(title="错误",message="下载路径为空！")
+                else:
+                    DownUrl = requests.get(self.url)
+                    DownData = DownUrl.text
+                    with open(self.path+self.filename+self.hz,'w') as f:
+                        f.write(DownData)
+                        f.close()
+            else:
+                tkinter.messagebox.showwarning(title="错误",message="未知错误")
+                print("未知错误")
+        except Exception as e:
+            print(e)
+            tkinter.messagebox.showwarning(title="错误",message=str(e))
+
 class JsonFile:
     """
     读取/写入JSON文件的类
@@ -245,7 +273,40 @@ def DownloadWindGame():
             f.close() 
 
         print(str(Game_JSON_text))
+
     NowGame = ttk.Button(Wind,text="下载最新版",command=down_game).grid(row=0,column=0)
+    VerGameLab = ttk.Label(Wind,text="版本名:").grid(row=0,column=1)
+    VerGameInp = ttk.Entry(Wind)
+    def down_game_all():
+        VerQuantity = len(manifest_json["versions"])
+        #VerListSYZ = 
+        Quan = 0
+        while Quan < VerQuantity:
+            try:
+                if manifest_json["versions"][Quan]["id"] == VerGameInp.get():
+                    SYZ = manifest_json["versions"][Quan]["id"]
+                    QuanA = Quan
+                    Quan = VerQuantity
+                else:
+                    Quan += 1
+            except:
+                Quan += 1
+        #VerName = manifest_json["versions"][int(SYZ)]["id"]
+        Game_JSON = requests.get(manifest_json["versions"][QuanA]["url"])
+        Game_JSON_text_py = json.loads(Game_JSON.text)
+        VerName = VerGameInp.get()
+        Game_JSON_text = json.dumps(Game_JSON_text_py,sort_keys=True, indent=4, separators=(',', ': '))
+
+        if os.path.isdir(f'.minecraft/versions/{VerName}') == False:
+            os.makedirs(f'.minecraft/versions/{VerName}')
+        with open(f'.minecraft/versions/{VerName}/{VerName}.json','w') as f:
+            f.write(Game_JSON_text)
+            f.close() 
+
+        print(str(SYZ))
+    VerGameInp.grid(row=0,column=2)
+    VerGameBtn = ttk.Button(Wind,text="下载此版本",command=down_game_all).grid(row=0,column=3)
+    GameLabel = ttk.Label(Wind,text="共找到"+str(len(manifest_json["versions"]))+"个版本").grid(row=1,column=0)
 
 MainFrame = tk.Frame(MainWind).pack()
 
@@ -267,7 +328,6 @@ def VerListDef():
     except Exception as e:
         print(e)
         tkinter.messagebox.showwarning(title="错误",message=e)
-VerList.bind('<Button-1>',VerListDef)
 VerList.pack()
 
 VerActive = ttk.Label(MainFrame,text="当前选中版本:"+str(ReadFile('config/cfg/ver.txt')),font=("楷体",16)).pack()
