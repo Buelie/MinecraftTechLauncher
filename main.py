@@ -149,6 +149,21 @@ def GameHeadSet():
     XmsEntry = ttk.Entry(WindMaino)
     XmsEntry.grid(row=1,column=1)
     XmsBtn = ttk.Button(WindMaino,text="应用").grid(row=1,column=2)
+
+    YouHua = ttk.Checkbutton(WindMaino,text="使用优化参数").grid(row=2,column=0)
+    D64 = ttk.Checkbutton(WindMaino,text="添加-d64参数").grid(row=2,column=1)
+
+    OpenBtn = ttk.Button(WindMaino,text="导入HMCL/PCL配置文件").grid(row=3,column=0)
+    OpenBtnG = ttk.Button(WindMaino,text="导入官方启动器配置文件").grid(row=3,column=1)
+
+    ANZ = ttk.Label(WindMaino,text="安装Java/JDK:").grid(row=4,column=0)
+    tupleVar = ("Java7","Java8","Java17","Java17/JDK17/JRE17","JDK1.8")
+    var = tkinter.StringVar()
+    var.set('Java17/JDK17/JRE17')
+    # 这里必须要带*号，要不然解释器会认为是一个数据，只会显示一行的
+    optionMenu = tkinter.OptionMenu(WindMaino, var, *tupleVar)
+    optionMenu.grid(row=4,column=1)
+
 def Settings():
     WindMain = tk.Toplevel()
     WindMain.geometry("600x450+374+182")
@@ -208,14 +223,31 @@ UserName = JsonFile("config/cfg/username.txt").FileRead()
 """
 子窗口
 """
-def DownloadWind():
+version_manifest_json = requests.get("https://bmclapi2.bangbang93.com/mc/game/version_manifest.json")
+version_manifest = version_manifest_json.text
+manifest_json = json.loads(version_manifest)
+release_game = manifest_json["latest"]["release"]
+
+def DownloadWindGame():
     Wind = tk.Toplevel()
     Wind.geometry("600x450+374+182")
-    Wind.title("MTC/MTL - 下载")
+    Wind.title("MTC/MTL - 下载游戏本体")
+
+    def down_game():
+        Game_JSON = requests.get(manifest_json["versions"][0]["url"])
+        Game_JSON_text = Game_JSON.text
+
+        if os.path.isdir(f'.minecraft/versions/{release_game}') == False:
+            os.makedirs(f'.minecraft/versions/{release_game}')
+        with open(f'.minecraft/versions/{release_game}/{release_game}.json','w') as f:
+            f.write(Game_JSON_text)
+            f.close() 
+
+        print(str(Game_JSON_text))
+    NowGame = ttk.Button(Wind,text="下载最新版",command=down_game).grid(row=0,column=0)
 
 MainFrame = tk.Frame(MainWind).pack()
 
-version_manifest_json = requests.get("https://bmclapi2.bangbang93.com/mc/game/version_manifest.json")
 VerLable = tk.Label(MainFrame,text="版本列表:",font=("楷体",16),bg="#333333",fg="#FFF").pack()
 
 """
@@ -249,7 +281,7 @@ def cs():
     par = JsonFile("config/cfg/main.json").Read()
     try:
         command = '\"' + par["Java"] + '\\javaw.exe\"' + " -Xmx" + par["xmx"] + "m"\
-        + " -Dfml.ignoreInvalidMinecraftCertificates=true" +\
+        + "-XX:+UseG1GC" +" -Dfml.ignoreInvalidMinecraftCertificates=true" +\
         " -Dfml.ignorePatchDiscrepancies=true" + ' -Djava.library.path="'+\
         'Minecraft\\versions\\' + ver_cfg + "\\" + ver_cfg + ' -natives"' + " " + game().build() +\
         " " +JsonFile(".minecraft/versions/"+ver_cfg+"/"+ver_cfg+".json").Read()["mainClass"]
@@ -273,7 +305,7 @@ def StartGame():
             return command
         elif par["JavaPath"] == False:
             command = 'java' + " -Xmx" + par["xmx"] + "m"\
-            +" -Dfml.ignoreInvalidMinecraftCertificates=true" +\
+            +"-XX:+UseG1GC" +" -Dfml.ignoreInvalidMinecraftCertificates=true" +\
             " -Dfml.ignorePatchDiscrepancies=true" + ' -Djava.library.path="'+\
             'Minecraft\\versions\\' + ver_cfg + "\\" + ver_cfg + ' -natives"' + " " + game().build() +\
             " " +JsonFile(".minecraft/versions/"+ver_cfg+"/"+ver_cfg+".json").Read()["mainClass"]
@@ -292,7 +324,7 @@ BtnLen = ttk.Label(MainFrame,text="——————",font=("楷体",16)).pack(
 GetGameBtn = ttk.Button(MainFrame,text="获取当前游戏版本",width=30,command=VerListDef).pack()
 BtnBen = ttk.Label(MainFrame,text="——————",font=("楷体",16)).pack()
 GetAuthBtn = ttk.Button(MainFrame,text="获取拼接参数",width=30,command=cs).pack()
-
+LastLabel = ttk.Label(MainFrame,text="最新版本:"+manifest_json["latest"]["release"],font=("楷体",16)).pack()
 """
 菜单 >>>
 一级菜单:<启动器> | <下载> | <高级> | <帮助>
@@ -311,11 +343,11 @@ Launcher.add_command(label="退出",command=MainWind.quit)
 MainMenu.add_cascade(label="启动器",menu=Launcher)
 
 Download = tk.Menu(MainMenu,tearoff=False)
-Download.add_command(label="游戏本体",command=DownloadWind)
-Download.add_command(label="Mod",command=DownloadWind)
-Download.add_command(label="资源包",command=DownloadWind)
-Download.add_command(label="整合包",command=DownloadWind)
-Download.add_command(label="光影包",command=DownloadWind)
+Download.add_command(label="游戏本体",command=DownloadWindGame)
+Download.add_command(label="Mod",command=DownloadWindGame)
+Download.add_command(label="资源包",command=DownloadWindGame)
+Download.add_command(label="整合包",command=DownloadWindGame)
+Download.add_command(label="光影包",command=DownloadWindGame)
 MainMenu.add_cascade(label="下载",menu=Download)
 
 Senior = tk.Menu(MainMenu,tearoff=False)
