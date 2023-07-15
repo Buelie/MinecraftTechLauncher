@@ -1,6 +1,11 @@
 # MTL
 **这是一个用PY简简单单做的一个Minecraft启动器**
 
+# 视频
+
+![录制_2023_07_15_16_40_26_555](https://github.com/Buelie/MinecraftTechLauncher/assets/111875719/5e3cfc9a-5975-47e3-bd45-597545dac9ed)
+
+
 # 特点
 * [x] **高度自定义**
 * [x] **方便快捷**
