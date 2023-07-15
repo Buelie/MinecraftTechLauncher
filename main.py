@@ -235,7 +235,8 @@ def DownloadWindGame():
 
     def down_game():
         Game_JSON = requests.get(manifest_json["versions"][0]["url"])
-        Game_JSON_text = Game_JSON.text
+        Game_JSON_text_py = json.loads(Game_JSON.text)
+        Game_JSON_text = json.dumps(Game_JSON_text_py,sort_keys=True, indent=4, separators=(',', ': '))
 
         if os.path.isdir(f'.minecraft/versions/{release_game}') == False:
             os.makedirs(f'.minecraft/versions/{release_game}')
