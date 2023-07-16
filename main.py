@@ -7,6 +7,7 @@ import tkinter.ttk as ttk
 import tkinter.messagebox
 import webbrowser
 import requests
+import wget
 #1641780513
 # 文件检测/初始化
 if os.path.isdir('.minecraft/assets') == False:
@@ -51,6 +52,10 @@ if os.path.isfile('config/cfg/main.json') == False:
         fe = json.dumps(Test)
         f.write(fe)
         f.close()
+
+DownloadTheSources = ["https://bmclapi2.bangbang93.com","https://launcher.mojang.com","https://download.mcbbs.net"]
+DownloadSource = "https://bmclapi2.bangbang93.com"
+UseG1GC = False
 
 PluginList = os.listdir("config/plugin/")
 
@@ -185,12 +190,21 @@ def GameHeadSet():
     OpenBtnG = ttk.Button(WindMaino,text="导入官方启动器配置文件").grid(row=3,column=1)
 
     ANZ = ttk.Label(WindMaino,text="安装Java/JDK:").grid(row=4,column=0)
-    tupleVar = ("Java7","Java8","Java17","Java17/JDK17/JRE17","JDK1.8")
+    tupleVar = ("Java8","Java17","Java17/JDK17/JRE17","JDK1.8")
     var = tkinter.StringVar()
     var.set('Java17/JDK17/JRE17')
     # 这里必须要带*号，要不然解释器会认为是一个数据，只会显示一行的
     optionMenu = tkinter.OptionMenu(WindMaino, var, *tupleVar)
+    def down_java():
+        try:
+            if var.get() != "":
+                if var.get() == "Java8":
+                    wget.download("https://javadl.oracle.com/webapps/download/AutoDL?BundleId=248242_ce59cff5c23f4e2eaf4e778a117d4c5b","config/")
+                    os.rename("config/AutoDL","config/java8.exe")
+        except Exception as e:
+            print(e)
     optionMenu.grid(row=4,column=1)
+    OptionBtn = ttk.Button(WindMaino,text="下载/安装",command=down_java).grid(row=4,column=2)
 
 def Settings():
     WindMain = tk.Toplevel()
@@ -292,8 +306,13 @@ def DownloadWindGame():
             except:
                 Quan += 1
         #VerName = manifest_json["versions"][int(SYZ)]["id"]
+        
         Game_JSON = requests.get(manifest_json["versions"][QuanA]["url"])
-        Game_JSON_text_py = json.loads(Game_JSON.text)
+        Game_JSON_text = Game_JSON.text
+        if DownloadSource == "https://bmclapi2.bangbang93.com":
+            Game_JSON_text_T = Game_JSON_text.replace("https://launcher.mojang.com","https://bmclapi2.bangbang93.com")\
+            .replace("https://launchermeta.mojang.com","https://bmclapi2.bangbang93.com")
+        Game_JSON_text_py = json.loads(Game_JSON_text_T)
         VerName = VerGameInp.get()
         Game_JSON_text = json.dumps(Game_JSON_text_py,sort_keys=True, indent=4, separators=(',', ': '))
 
@@ -386,6 +405,9 @@ GetGameBtn = ttk.Button(MainFrame,text="获取当前游戏版本",width=30,comma
 BtnBen = ttk.Label(MainFrame,text="——————",font=("楷体",16)).pack()
 GetAuthBtn = ttk.Button(MainFrame,text="获取拼接参数",width=30,command=cs).pack()
 LastLabel = ttk.Label(MainFrame,text="最新版本:"+manifest_json["latest"]["release"],font=("楷体",16)).pack()
+
+def Help_User_XY():
+    webbrowser.open_new("http://www.qingyun233.top/index.php/2023/07/16/%e6%b8%85%e9%9b%b2%e7%94%a8%e6%88%b6%e5%8d%94%e8%ad%b0/")
 """
 菜单 >>>
 一级菜单:<启动器> | <下载> | <高级> | <帮助>
@@ -409,6 +431,7 @@ Download.add_command(label="Mod",command=DownloadWindGame)
 Download.add_command(label="资源包",command=DownloadWindGame)
 Download.add_command(label="整合包",command=DownloadWindGame)
 Download.add_command(label="光影包",command=DownloadWindGame)
+Download.add_command(label="下载其它文件",command=DownloadWindGame)
 MainMenu.add_cascade(label="下载",menu=Download)
 
 Senior = tk.Menu(MainMenu,tearoff=False)
@@ -421,6 +444,7 @@ MainMenu.add_cascade(label="高级",menu=Senior)
 Help = tk.Menu(MainMenu,tearoff=False)
 Help.add_command(label="帮助(软件内)")
 Help.add_command(label="帮助(软件外)",command=HelpExterior)
+Help.add_command(label="阅读用户协议",command=Help_User_XY)
 MainMenu.add_cascade(label="帮助",menu=Help)
 
 # - 分割线 -
