@@ -18,6 +18,17 @@
 * [ ] **全面资源下载**
 * [ ] **高度可扩展性**
 
+# 使用
+**由于启动器目前暂且无法自动识别Java安装路径，请手动配置Java安装路径(`config` > `cfg` > `main.json`文件中修改`Java`选项为Java安装路径即可)**
+```json
+{
+  "Java": "C:\\Program Files\\Java\\jdk-17\\bin", //Java路径，JavaPath为True时生效
+  "xmx": "1024", //最小分配内存
+  "JavaPath": true //是否使用指定Java路径的Java(true使用指定Java路径的Java，false使用java命令)
+}
+```
+
+
 # 开发者
 **再等等啦，API很快就造好轮子啦**
 
