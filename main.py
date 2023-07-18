@@ -8,6 +8,7 @@ import tkinter.messagebox
 import webbrowser
 import requests
 import wget
+import time
 #1641780513
 # 文件检测/初始化
 if os.path.isdir('.minecraft/assets') == False:
@@ -52,6 +53,11 @@ if os.path.isfile('config/cfg/main.json') == False:
         fe = json.dumps(Test)
         f.write(fe)
         f.close()
+API = 0
+while API <= 100:
+        print("[MTL / INFO]:加载api中--"+str(API)+"%")
+        time.sleep(0.01)
+        API += 1
 
 DownloadTheSources = ["https://bmclapi2.bangbang93.com","https://launcher.mojang.com","https://download.mcbbs.net"]
 DownloadSource = "https://bmclapi2.bangbang93.com"
@@ -139,6 +145,12 @@ class game:
         .replace("${assets_index_name}",assets_index_name).replace("${auth_uuid}",auth_uuid)\
         .replace("${auth_access_token}",auth_access_token).replace("${user_properties}",user_properties)\
         .replace("${user_type}",user_type)
+        print("[MTL / INFO]:启动参数构建完成")
+        try:
+            print("[MTL / INFO]:CODE-200")
+        except Exception as e:
+            print("MTL / INFO]:CODE-400")
+            print(e)
         return parameter
 
 PluginListTwo = JsonFile('config/cfg/plugin.json').Read()["$PluginList"]
@@ -335,23 +347,24 @@ VerLable = tk.Label(MainFrame,text="版本列表:",font=("楷体",16),bg="#33333
 版本列表
 VerVar变量用于获取目录下所有版本
 """
-VerVar = tk.StringVar() 
-VerVar.set(os.listdir('.minecraft/versions'))
-VerList = tk.Listbox(MainFrame,listvariable=VerVar)
-def VerListDef():
-    aver = os.listdir('.minecraft/versions')
-    try:
-        ac = VerList.curselection()
-        print("选中版本:"+str(ac))
-        tkinter.messagebox.showinfo(title="提示",message="当前选中版本:"+str(ac))
-    except Exception as e:
-        print(e)
-        tkinter.messagebox.showwarning(title="错误",message=e)
+VerVarAir = tk.StringVar()
+VerVarList = tkinter.StringVar()
+VerVarList = os.listdir('.minecraft/versions')
+VerVarListTwo = tuple(VerVarList)
+VerList = ttk.Combobox(MainFrame,textvariable=VerVarAir,value=VerVarListTwo)
+VerActive = ttk.Label(MainFrame,text="当前选中版本:"+str(ReadFile('config/cfg/ver.txt')),font=("楷体",16))
+def VerListDef(*args):
+    with open('config/cfg/ver.txt','w') as f:
+        f.write(VerList.get())
+        f.close()
+
+        VerActive.config(text="当前选中版本:"+str(ReadFile('config/cfg/ver.txt')))
+    return VerList.get()
+VerList.bind('<Button-1>',VerListDef)
 VerList.pack()
 
-VerActive = ttk.Label(MainFrame,text="当前选中版本:"+str(ReadFile('config/cfg/ver.txt')),font=("楷体",16)).pack()
+VerActive.pack()
 VerLen = ttk.Label(MainFrame,text="版本数量:"+str(len(os.listdir('.minecraft/versions'))),font=("楷体",16)).pack()
-
 """
 启动游戏按钮
 绑定StartGame函数
@@ -360,13 +373,22 @@ def cs():
     ver_cfg = ReadFile('config/cfg/ver.txt')
     par = JsonFile("config/cfg/main.json").Read()
     try:
-        command = '\"' + par["Java"] + '\\javaw.exe\"' + " -Xmx" + par["xmx"] + "m"\
-        + "-XX:+UseG1GC" +" -Dfml.ignoreInvalidMinecraftCertificates=true" +\
-        " -Dfml.ignorePatchDiscrepancies=true" + ' -Djava.library.path="'+\
-        'Minecraft\\versions\\' + ver_cfg + "\\" + ver_cfg + ' -natives"' + " " + game().build() +\
-        " " +JsonFile(".minecraft/versions/"+ver_cfg+"/"+ver_cfg+".json").Read()["mainClass"]
-        tkinter.messagebox.showinfo(title="提示",message="拼接参数如下:\n"+command)
-        return command
+        if UseG1GC == True:
+            command = '\"' + par["Java"] + '\\javaw.exe\"' + " -Xmx" + par["xmx"] + "m"\
+            + "-XX:+UseG1GC" +" -Dfml.ignoreInvalidMinecraftCertificates=true" +\
+            " -Dfml.ignorePatchDiscrepancies=true" + ' -Djava.library.path="'+\
+            'Minecraft\\versions\\' + ver_cfg + "\\" + ver_cfg + ' -natives"' + " " + game().build() +\
+            " " +JsonFile(".minecraft/versions/"+str(VerListDef())+"/"+str(VerListDef())+".json").Read()["mainClass"]
+            tkinter.messagebox.showinfo(title="提示",message="拼接参数如下:\n"+command)
+            return command
+        elif UseG1GC == False:
+            command = '\"' + par["Java"] + '\\javaw.exe\"' + " -Xmx" + par["xmx"] + "m"\
+            + "-XX:+UseG1GC" +" -Dfml.ignoreInvalidMinecraftCertificates=true" +\
+            " -Dfml.ignorePatchDiscrepancies=true" + ' -Djava.library.path="'+\
+            'Minecraft\\versions\\' + ver_cfg + "\\" + ver_cfg + ' -natives"' + " " + game().build() +\
+            " " +JsonFile(".minecraft/versions/"+str(VerListDef())+"/"+str(VerListDef())+".json").Read()["mainClass"]
+            tkinter.messagebox.showinfo(title="提示",message="拼接参数如下:\n"+command)
+            return command
     except Exception as e:
         print(e)
         tkinter.messagebox.showwarning(title="错误",message=str(e))
@@ -376,13 +398,22 @@ def StartGame():
         ver_cfg = ReadFile('config/cfg/ver.txt')
         par = JsonFile("config/cfg/main.json").Read()
         if par["JavaPath"] == True:
-            command = '\"' + par["Java"] + '\\javaw.exe\"' + " -Xmx" + par["xmx"] + "m"\
-            + " -Dfml.ignoreInvalidMinecraftCertificates=true" +\
-            " -Dfml.ignorePatchDiscrepancies=true" + ' -Djava.library.path="'+\
-            'Minecraft\\versions\\' + ver_cfg + "\\" + ver_cfg + ' -natives"' + " " + game().build() +\
-            " " +JsonFile(".minecraft/versions/"+ver_cfg+"/"+ver_cfg+".json").Read()["mainClass"]
-            os.system(command)
-            return command
+            if UseG1GC == True:
+                command = '\"' + par["Java"] + '\\javaw.exe\"' + " -Xmx" + par["xmx"] + "m"\
+                + " -XX:+UseG1GC" +" -Dfml.ignoreInvalidMinecraftCertificates=true" +\
+                " -Dfml.ignorePatchDiscrepancies=true" + ' -Djava.library.path="'+\
+                'Minecraft\\versions\\' + ver_cfg + "\\" + ver_cfg + ' -natives"' + " " + game().build() +\
+                " " +JsonFile(".minecraft/versions/"+ver_cfg+"/"+ver_cfg+".json").Read()["mainClass"]
+                os.system(command)
+                return command
+            elif UseG1GC == False:
+                command = '\"\"' + par["Java"] + '\\javaw.exe\"\"' + " -Xmx" + par["xmx"] + "m"\
+                + " -Dfml.ignoreInvalidMinecraftCertificates=true" +\
+                " -Dfml.ignorePatchDiscrepancies=true" + ' -Djava.library.path="'+\
+                'Minecraft\\versions\\' + ver_cfg + "\\" + ver_cfg + ' -natives"' + " " + game().build() +\
+                " " +JsonFile(".minecraft/versions/"+ver_cfg+"/"+ver_cfg+".json").Read()["mainClass"]
+                os.system(command)
+                return command
         elif par["JavaPath"] == False:
             command = 'java' + " -Xmx" + par["xmx"] + "m"\
             +"-XX:+UseG1GC" +" -Dfml.ignoreInvalidMinecraftCertificates=true" +\
